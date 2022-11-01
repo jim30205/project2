@@ -26,7 +26,7 @@ class ColorCanvas(tk.Canvas):
         self.create_rectangle(self.space, self.space, self.width - self.space, self.height - self.space,fill=self.rec_color)        
         if self.__state == True:
             #多加小圓點
-            print("多加小圓點")
+            
             rec_width = self.width  - 2 * self.space 
             rec_height = self.height - 2 * self.space            
             cir_width = rec_width / 5
@@ -48,9 +48,7 @@ class Window(tk.Tk):
             cls.selected_convas.state = ColorCanvas.OFF   
         cls.selected_convas = convas
         cls.selected_convas.state = ColorCanvas.ON
-
     light_state = False
-
 
 
     def __init__(self):
