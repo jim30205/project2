@@ -1,4 +1,6 @@
 import tkinter as tk
+from gpiozero import RGBLED
+from gpiozero import Button
 class ColorCanvas(tk.Canvas):
     #建立Class的propertuy
     #建立一個Class內建的常數
@@ -61,7 +63,7 @@ class Window(tk.Tk):
         title_frame = tk.Frame(self)
         title_frame.pack(pady=(30,0))
         tk.Label(title_frame,text="RGB燈光顏色控制器",font=('Arial',20)).pack()        
-        #----- end title_frame ------
+       
         
         #---- start color_frame -----
         color_frame = tk.Frame(self,borderwidth=2,relief=tk.GROOVE)
@@ -78,18 +80,20 @@ class Window(tk.Tk):
         blue.grid(row=1, column=2)
         Window.set_select_convas(red)
         select_canvas = Window.get_select_convas()
-        #---- end color_frame -----
-
-
+     
         #---- start light_state_frame -----
         light_state_frame = tk.Frame(self,borderwidth=2,relief=tk.GROOVE)
         state_label =  tk.Label(light_state_frame,text="目前燈光:關",font=('Arail',16),anchor=tk.W)
         state_label.pack(fill=tk.X,padx=10,pady=10)
         light_state_frame.pack(fill=tk.X,padx=50,pady=(0,30))
-        #---- end light_state_frame -----
-
+      
+        #gpiozero->一定要self
+        self.button=Button(18)
+        self.button.when_released = self.button_released
     def mouse_click(self,event):
         Window.set_select_convas(event.widget)
+    def button_released(self):
+        print("button release")
 def main():
     window = Window()
     window.title("RGBLED 顏色控制")
