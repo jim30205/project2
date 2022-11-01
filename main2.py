@@ -73,6 +73,12 @@ class Window(tk.Tk):
         #---- end color_frame -----
 
 
+        #---- start light_state_frame -----
+        light_state_frame = tk.Frame(self,borderwidth=2,relief=tk.GROOVE)
+        state_label =  tk.Label(light_state_frame,text="目前燈光:關",font=('Arail',16),anchor=tk.W)
+        state_label.pack(fill=tk.X,padx=10,pady=10)
+        light_state_frame.pack(fill=tk.X,padx=50,pady=(0,30))
+        #---- end light_state_frame -----
 
     def mouse_click(self,event):
         Window.set_select_convas(event.widget)
