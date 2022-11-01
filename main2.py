@@ -1,9 +1,11 @@
 import tkinter as tk
-
+class ColorCanvas(tk.Canvas):
+    def __init__(self,parent,**kargs):
+        super().__init__(parent,**kargs)
 class Window(tk.Tk):
     def __init__(self):
         super().__init__()
-        red = tk.Canvas(self,width=70,height=70)
+        red = ColorCanvas(self,width=70,height=70)
         red.create_rectangle(10,10,60,60,fill="red",)
         x=70*1/5
         y=70*4/6
