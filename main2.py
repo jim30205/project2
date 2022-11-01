@@ -38,7 +38,7 @@ class ColorCanvas(tk.Canvas):
             self.create_oval(cir_start_x,cir_start_y,cir_end_x,cir_end_y,fill='white',outline='white')
        
 class Window(tk.Tk):
-    selected_convas = None
+    selected_convas = None    
     @classmethod
     def get_select_convas(cls):
         return cls.selected_convas
@@ -48,13 +48,9 @@ class Window(tk.Tk):
             cls.selected_convas.state = ColorCanvas.OFF   
         cls.selected_convas = convas
         cls.selected_convas.state = ColorCanvas.ON
-        light_state=False
-        @classmethod
-        def get_current_state(cls):
-            return cls.light_state
-        @classmethod
-        def set_current_state(cls,state):
-            cls.light_state=state
+
+    light_state = False
+
 
 
     def __init__(self):
@@ -64,11 +60,10 @@ class Window(tk.Tk):
         title_frame.pack(pady=(30,0))
         tk.Label(title_frame,text="RGB燈光顏色控制器",font=('Arial',20)).pack()        
        
-        
         #---- start color_frame -----
         color_frame = tk.Frame(self,borderwidth=2,relief=tk.GROOVE)
         color_frame.pack(padx=50,pady=50) 
-        tk.Label(color_frame,text="請選擇顏色:",font=("Arial",16)).grid(row=0,column=0,columnspan=3,sticky=tk.W)        
+        tk.Label(color_frame,text="請選擇顏色:",font=("Arial",16)).grid(row=0,column=0,columnspan=3,sticky=tk.W,padx=10,pady=10)        
         red = ColorCanvas(color_frame,"red",width=100,height=100)
         red.bind('<ButtonRelease-1>',self.mouse_click)
         red.grid(row=1, column=0)               
@@ -80,20 +75,39 @@ class Window(tk.Tk):
         blue.grid(row=1, column=2)
         Window.set_select_convas(red)
         select_canvas = Window.get_select_convas()
-     
+        
         #---- start light_state_frame -----
         light_state_frame = tk.Frame(self,borderwidth=2,relief=tk.GROOVE)
-        state_label =  tk.Label(light_state_frame,text="目前燈光:關",font=('Arail',16),anchor=tk.W)
-        state_label.pack(fill=tk.X,padx=10,pady=10)
+        self.state_label =  tk.Label(light_state_frame,text="目前燈光:關",font=('Arail',16),anchor=tk.W)
+        self.state_label.pack(fill=tk.X,padx=10,pady=10)
         light_state_frame.pack(fill=tk.X,padx=50,pady=(0,30))
-      
+        
         #gpiozero->一定要self
-        self.button=Button(18)
+        self.button = Button(18)
         self.button.when_released = self.button_released
+        #led
+        self.led = RGBLED(red=17, green=27, blue=22)
+        self.led.color=(0,0,0)
     def mouse_click(self,event):
         Window.set_select_convas(event.widget)
+
     def button_released(self):
-        print("button release")
+        Window.light_state = not Window.light_state
+        if Window.light_state == True:
+            print("開燈")
+            self.state_label.config(text="目前燈光:開")
+            canvas = Window.get_select_convas()
+            if canvas.rec_color == "red":
+                self.led.color=(1,0,0)
+            elif canvas.rec_color == "green":
+                self.led.color=(0,1,0)
+            elif canvas.rec_color == "blue":
+                self.led.color=(0,0,1)
+        else:
+            print("關燈")
+            self.state_label.config(text="目前燈光:關")
+            self.led.color=(0,0,0)
+
 def main():
     window = Window()
     window.title("RGBLED 顏色控制")
