@@ -35,14 +35,11 @@ class ColorCanvas(tk.Canvas):
             cir_end_y  =  cir_start_y + cir_height
             self.create_oval(cir_start_x,cir_start_y,cir_end_x,cir_end_y,fill='white',outline='white')
        
-
-
 class Window(tk.Tk):
     selected_convas = None
     @classmethod
     def get_select_convas(cls):
         return cls.selected_convas
-
     @classmethod
     def set_select_convas(cls,convas):
         if cls.selected_convas is not None:
@@ -51,24 +48,34 @@ class Window(tk.Tk):
         cls.selected_convas.state = ColorCanvas.ON
 
     def __init__(self):
-        super().__init__()           
-        red = ColorCanvas(self,"red",width=100,height=100)
+        super().__init__()
+        #---- start title_frame -----
+        title_frame = tk.Frame(self)
+        title_frame.pack(pady=(30,0))
+        tk.Label(title_frame,text="RGB燈光顏色控制器",font=('Arial',20)).pack()        
+        #----- end title_frame ------
+        
+        #---- start color_frame -----
+        color_frame = tk.Frame(self,borderwidth=2,relief=tk.GROOVE)
+        color_frame.pack(padx=50,pady=50) 
+        tk.Label(color_frame,text="請選擇顏色:",font=("Arial",16)).grid(row=0,column=0,columnspan=3,sticky=tk.W)        
+        red = ColorCanvas(color_frame,"red",width=100,height=100)
         red.bind('<ButtonRelease-1>',self.mouse_click)
-        red.grid(row=0, column=0)               
-        green = ColorCanvas(self,"green",width=100,height=100)
+        red.grid(row=1, column=0)               
+        green = ColorCanvas(color_frame,"green",width=100,height=100)
         green.bind('<ButtonRelease-1>',self.mouse_click)        
-        green.grid(row=0, column=1)        
-        blue = ColorCanvas(self,"blue",width=100,height=100)
+        green.grid(row=1, column=1)        
+        blue = ColorCanvas(color_frame,"blue",width=100,height=100)
         blue.bind('<ButtonRelease-1>',self.mouse_click)        
-        blue.grid(row=0, column=2)
+        blue.grid(row=1, column=2)
         Window.set_select_convas(red)
         select_canvas = Window.get_select_convas()
-        print(select_canvas.rec_color)
+        #---- end color_frame -----
+
 
 
     def mouse_click(self,event):
         Window.set_select_convas(event.widget)
-
 def main():
     window = Window()
     window.title("RGBLED 顏色控制")
